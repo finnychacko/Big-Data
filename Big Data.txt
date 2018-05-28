@@ -1,0 +1,511 @@
+::Big Data::
+
+MySQL crashes after 2TB
+latency - time to take to get the data and process the data
+scalability- increasing ram or disk space
+
+How to store Big Data ?
+How to process Big Data ?
+
+RDBMS - inadequate !
+
+what to do ?
+	- MPP - Massively parallel processing systems - expensive
+	- BSP - Bulk Synchronous parallel system
+
+Google - 1998 - Google search - Core of Google Search - GFS(Google file system), MapReduce, BigTable
+
+Google published white-papers on GFS(Google file system), MapReduce, BigTable - 2004
+
+Yahoo decided to bring code (GFS + MapReduce), hired Doug Cutting (Architect of Hadoop) - Java
+
+HDFS + MapReduce = Hadoop
+
+Hadoop project was handed over to Apache Software Foundation in 2006
+
+distributed computing - Hadoop(Open Source) makes it easy - credit to Google
+
+Hive was started by FB and was open source in 2008 - SQL engine for Hadoop
+
+
+With Hadoop, using HDFS - store 10x more at the same cost
+With Hadoop, using MapReduce - process 10x faster than RDBMS
+Hadoop :: HDFS helps in storing ; MapReduce helps in processing
+
+
+Hadoop Distributed File System (HDFS™): A distributed file system that provides high-throughput access to application data.
+Hadoop YARN: A framework for job scheduling and cluster resource management.
+Hadoop MapReduce: A YARN-based system for parallel processing of large data sets.
+Hive™: A data warehouse infrastructure that provides data summarization and ad hoc querying.
+Pig™: A high-level data-flow language and execution framework for parallel computation.
+Spark™: A fast and general compute engine for Hadoop data. Spark provides a simple and expressive programming model that supports a wide range of applications, including ETL, machine learning, stream processing, and graph computation.
+
+
+each computer is a node and together they form a cluster and work as one entity
+
+
+Distributed computing : 
+	- you have to manage resources at very node
+	- coordinate tasks
+	- if one node goes, the process should not get affected
+
+
+GFS - Storage
+MapReduce - processing data
+Bigtable - database management
+All these architecture abstract programmers from the complexity of distributed computing
+
+
+In Hadoop :
+GFS -HDFS - a file system to manage the storage of data
+MapReduce - Hadoop MapReduce - parallel processing
+Bigtable - Hbase
+
+
+::Hadoop ecosystem:: 
+	- We can use Hadoop and related projects to achieve analytics on Big Data
+	- Hadoop systems are capable to query petabytes of scale of data
+	- A single Hadoop cluster can host 1000's of nodes
+
+
+Hadoop = HDFS(storage) + MapReduce(processing)
+
+What is YARN (yet another resource negotiator)?
+MapReduce version 2
+
+Hadoop 1.x - Old
+Hadoop 2.x - Present (learning)
+Hadoop 3.x - New
+
+
+::HDFS ::
+	- abbreviated as Hadoop Distributed File System
+	- Manages the disks attached to the nodes within the cluster 
+	- HDFS will internally split the data into small chunks (called as blocks), these blocks are going to be distributed and stored on different nodes within the   cluster (DataNode)
+	- HDFS will only manage the distribution (distribution is automated and abstracted for the user) - (NameNode)
+	- HDFS uses replication to ensure data reliability and fault tolerance. Replication is also managed by HDFS
+
+
+::YARN ::
+	- Abbreviated as Yet Another Resource Negotiator
+	- MapReduce was revamped into MapReduce V2 (called as YARN)
+	- YARN forms the layer for data processing (distributed by HDFS) 
+	- YARN will allocate compute resources for data processing
+	- We look at minimized data movement, YARN makes an effort to put the computation on the node where the data resides (Data Locality)
+	- Because data is distributed on machines with compute power, computation can be sent directly to the machines storing the data
+
+
+To choose the right hardware for a Hadoop cluster - since each node in a Hadoop cluster as well as processes data, those nodes need to be configured to satisfy both data storage and processing requirements
+
+
+program under execution is a process
+set of process is service
+program is running in the background is called Daemon
+
+
+to check if Hadoop is running, open terminal and run 
+- sudo jps
+
+
+On the VM, we have
+- Linux file system (local file system)
+- Hadoop file system (HDFS)
+
+
+Things that can be done in HDFS in Hadoop : 
+Create a file
+Delete a file
+Append a file
+Create a directory
+
+Update a file - No updates allowed in HDFS
+
+HDFS datasets are immutable (Read only)
+
+UI / CLI (command line interface)
+
+::Commands on Terminal::
+	- pwd (present working directory)
+	- ls (what are the files available in home directory)
+	- cd (change directory)
+	ctrl + L = clears the screen
+	hadoop fs = list of function in hadoop
+	/ indicates root
+	- put used to put the data into Hadoop
+	- cp to copy file 
+	- rm is used to remove
+	-D to override default configuration
+
+
+block size is a maximum of 128MB
+
+
+Any file that exceed 128MB becomes Blocks (file will get split)
+Namenode will allocate each block of a file into different node
+datanode are the location where the blocks are physically stored
+Namenode decides which block goes to which node
+
+################################################################################################################################################################
+
+All fs shell commands will be executed on the clients node
+
+
+Three V's of Big Data (characteristics)
+	- Volume
+	- Variety
+	- Velocity
+	- Veracity
+	- Volatility
+
+
+::HDFS Architecture ::
+	-> The Hadoop Distributed File System (HDFS) is a distributed file system designed to run on commodity hardware.
+	-> Hardware failure is the norm rather than the exception.
+	-> Detection of faults and quick, automatic recovery from them is a core architectural goal of HDFS.
+	-> Applications that run on HDFS have large data sets. A typical file in HDFS is gigabytes to terabytes in size
+	-> A file once created, written, and closed need not be changed (Immutable Datasets)
+	-> HDFS has a master/slave architecture. 
+	-> An HDFS cluster consists of a single NameNode, a master node. The Namenode manages the file system and regulates access to files by clients.       (clients are going to write files into the cluster)
+	-> In addition, there are a number of DataNodes, usually one per node in the cluster, which manage storage attached to the nodes that they run on
+	-> HDFS allows user data to be stored in files
+	-> Internally, a file is split into one or more blocks and these blocks are stored in a set of DataNodes
+	-> The NameNode makes all decisions regarding replication of blocks and allocation of nodes
+	-> The NameNode executes file operations like opening, closing, and renaming files and directories
+	-> The NameNode stores the file system MetaData (file Vs Block Mapping, Block Vs Node Mapping)
+	-> The DataNode are the actual storage points
+	-> The DataNode executes the NameNode's instructions
+	-> The Data blocks are replicated for fault tolerance, and this replication is at a block level
+	-> As Hadoop users, we deal with files (to access, also to process)
+	-> The existence of a single NameNode in a cluster greatly simplifies the architecture of the system
+	-> The system is designed in such a way that user data never flows through the NameNode
+	-> HDFS supports a traditional hierarchical file organization. A user or an application can create directories and store files inside these directories. It provides a CommandLine interface called FsShell that lets a user interact with the data in HDFS
+	-> HDFS is designed to reliably store very large files across machines in a large cluster. It stores each file as a sequence of blocks
+	-> HDFS is meant for sequential access to data
+	-> NameNode periodically receives a Heartbeat from each of the DataNodes in the cluster (default interval = 3 sec). Receipt of a Heartbeat implies that the DataNode is functioning properly
+
+
+How to write a file into the cluster ?
+::Anatomy of a file write ::
+	- Client connects to the NameNode, to create a new file in the HDFS, with no blocks associated with it initially
+	- The NameNode makes a record of the new file, and returns an instruction for the client to start writing data
+	- As the client writes the data, DFSOutputStream splits it into blocks, which is written to an internal queue initially (called as data queue)
+	- The data queue is consumed by the DataStreamer, which is responsible for asking the NameNode to allocate new blocks by picking a list of suitable DataNodes to store the replicas
+	- The list of DataNodes allocated, forms a "pipeline of DataNodes". For the standard replication factor of 3, there will be 3 DataNodes in the pipeline
+	- The DataStreamer streams the blocks to the first DataNode in the pipeline, and the first DataNode stores it on its disk, and forwards it to the second DataNode in the pipeline. Similarly, the second DataNode stores the block and forwards it to the third (and last) DataNode in the pipeline
+	- DFSOutputStream also maintains an interval queue of packets that are waiting to be acknowledged by DataNodes, called the ack queue. A packet is removed from the ack queue only when it has been acknowledged by all the DataNodes on the pipeline
+	- When the client has finished writing data, it calls close() on the DFSOutputStream. The MetaData is committed and the file write is complete
+ 
+
+How to read a file which is on the cluster ?
+::Anatomy of a file read::
+	- The client opens the file it wishes to read by calling open() on the FileSystem object (is an instance of DistributedFileSystem)
+	- DistributedFileSystem calls the NameNode, to determine the locations of the blocks for the file
+	- For each block, the NameNode returns the addresses of the DataNodes that have a copy of that block
+	- The DistributedFileSystem returns an FSDataInputStream (an input stream that supports file seeks) to the client for it to read data from
+	- The client then calls read() on the DFSInputStream
+	- DFSInputStream,then connects to the first DataNode for the first block in the file
+	- Blocks are read in sequence
+	- When the client has finished reading, it calls close() on the FSDataInputStream
+
+
+::NameNode And SecondaryNameNode::
+A closer look at the MetaData (residing on NN)  
+How is the File System MetaData stored ?
+	- The HDFS MetaData is stored by the NameNode
+	- The NameNode uses a transaction log called the EditLog to persistently record every change that occurs to file system MetaData (EditLog is a file on the OS file system of the machine running NN)
+	- The entire file system MetaData, including the mapping of blocks to files and file system properties, is stored in a file called the FsImage(File System Image, also resides on the OS file system of the machine running NN)
+	- NN has 2 files -> EditLog, FsImage
+	- Looking from backup of the MetaData angle, we need to have the above two files backed up
+
+
+Checkpointing Procedure :
+	- All about merging Editing to FsImage
+	
+	- Who does it ?
+	- NN can do it (only if we restart NN)
+	- SNN does Checkpointing
+		- Regular Checkpoint interval - 1 hour by default
+		- Or 1 million transactions on the EditLog
+
+SNN is not a hot backup for the NN
+SNN is a single point of failure (risk)
+	- to minimize the risk
+		- Run NN on hardware which does not fail
+		- Reduce the checkpoint interval
+
+What Is MapReduce ?
+- A programming model for distributed datasets
+- From a developer's angle, involves 2 phases
+	- Map Phase
+	- Reduce Phase
+- The MapReduce framework abstract the complexity of IO from the developer
+- Hadoop provides API's, we extend the classes from API in our code ad write MapReduce programs
+
+- MapReduce programs are mostly written on Java
+- MapReduce programs are submitted to the cluster for execution
+
+- A MapReduce program under execution, is called a JOB
+- It is the YARN's responsibility to handle the job execution
+
+- YARN does so by allocating adequate compute resources for the job to complete execution
+- YARN makes an effort to put the program on date (hence achieving data locality, minimized data movement and Fast processing). It is easy to move program to data, rather than moving data to where the program is being executed
+
+- MapReduce works on (Key,Value) pairs. Ex. Welcome, 1 where Welcome - Key and 1 is the value
+- A MapReduce program will have 3 classes defined
+	- Mapper class
+	- Reducer class
+	- main()
+
+How does MapReduce work ?
+- Map part of the node runs where the data resides(block)
+- Map and Reduce methods under execution are the actual units of execution within the program
+- We need compute resources for execution of these tasks
+- The challenge is to acquire a compute resource on the same node where the data block resides in order to run a map task. YARN addresses this!
+
+Understanding MapReduce with an example :
+Example Application : The MapReduce WordCount program
+WordCount is a simple application that counts the number of occurrences of each word in a given input set.
+
+Input Set - /Sample/SampleFile.txt
+
+Welcome to Hadoop
+Learning Hadoop is fun
+Hadoop Hadoop Hadoop is the buzz
+
+Expected Output ?
+*Final Output
+
+<Hadoop,5> <Learning,1> <Welcome,1> <buzz,1> <fun,1> <is,2> <the,1> <to,1>
+ 
+
+*Map Output
+Hadoop - 1
+to - 1
+Welcome - 1
+
+fun - 1
+Hadoop - 1
+is - 1
+Learning - 1
+
+Hadoop - 3
+is - 1
+the - 1
+buzz - 1
+
+The MapReduce program that we write to solve the WordCount problem would have a template as below :
+
+Create a file called WorkCount.java, within the file
+
+public class WordCount {
+	MyMapper extends Mapper {
+			Map() {
+			// Logic
+			}
+	}
+	MyMapper extends Reducer {
+			Reduce() {
+			// Logic
+			}
+	}
+	main() {
+		// Entry point for execution
+		// Configure job object
+		// Execute the program
+	}
+}
+
+
+################################################################################################################################################################
+
+******************************
+Assignment 1 :
+What is 
+	Big Data
+	Hadoop 
+	OLTP
+	OLAP
+	RDBMS
+	HDFS
+	MapReduce
+	NameNode
+	DataNode
+	SecondaryNameNode
+	ResourceManager
+	NodeManager
+	Distributed File System
+	Parallel Processing
+	Commodity Hardware
+	JRE
+	JDK
+	a process ?
+	a daemon ?
+	a service ?
+******************************
+
+YARN - * cluster resource management which intents to run programs on data *
+
+MapReduce - an abstract complexity of distributed system
+
+
+ ::MapReduce::
+ Steps involved in MapReduce :
+ - Input Split
+ - Map
+ - Shuffle & Sort
+ - Reduce
+ - Final Output
+
+
+::Input Split::
+- When HDFS distributed the data blocks, it did not respect the logical boundaries of the dataset (ex. A line might be split in-between and half the line might be on 1 node and another half on the other). While processing data, addressing this problem was challenging for any distributed computing framework.
+- THe MapReduce framework understood this problem well and handled it with the "Input Split" functionality
+- On each block of the dataset where the mapper would be running, the MapReduce framework creates an Input Split by respecting the logical boundaries of the dataset and then passing it to the Mapper
+- We can be sure that our final output will not have any impact because of HDFS hard split
+- Input Splits are logical (The data blocks are not physically changed after the execution completes)
+- Input Splits are complex to be handled by the developer. Hence, the MapReduce framework handles it, and makes it easy for the developer to code the map logic with map() of the mapper class
+
+**Input Split is part of MapReduce
+
+::Map::
+- The MapReduce framework spawns a mapper for each input split(The number of map tasks = The number of Input Splits for a program)
+- The Mapper class is inherited from the API and we overwrite the map() method (To apply logic on the dataset)
+- Mostly we code the logic for transforming datasets in the map phase
+- The map() method in the program will be the map task during execution
+- The InputSplit reads one line at a time into a <Key,Value> pair and gives it to the map()
+- map() will iterate for each line (record), and transform the dataset into <Key, value> pairs
+- YARN will allocate a compute resource (CPU+RAM) for the execution of map
+- Map transforms your data into a set of intermediate key, value pairs
+- Input <K1,V1> --> Map --> List<K2,V2>
+- The MapReduce framework operates exclusively on <Key,Value> pairs, that is, the framework views the input to the job as a set of <Key,Value> pairs and produces a set of <Key,Value> pairs as the output of the job
+- The output of map is stored on the local file system of the node (where the map task was running)
+
+For the WordCount example, the logic for map()
+		- Pick the value
+		- Tokenize (split by delimiter " " and convert into words)
+		- Mark every token (word) as the key, assign a value 1 (it occurred once)
+
+<0, Welcome to Hadoop>  -->  Input (Map)  -->   <Welcome,1> <to,1>, <Hadoop,1>
+<18, Learning Hadoop is fun>  -->  Input (Map)  -->   <Learning,1> <Hadoop,1> <is,1> <fun,1>
+...
+...
+
+How to write the output of the map to the framework (Intermediate results)
+--> context.write(k,v)
+
+*****************************************
+The Mapper code 
+*****************************************
+
+ public static class TokenizerMapper
+       extends Mapper<Object, Text, Text, IntWritable>{
+
+    private final static IntWritable one = new IntWritable(1);
+    private Text word = new Text();
+
+    public void map(Object key, Text value, Context context
+                    ) throws IOException, InterruptedException {
+      StringTokenizer itr = new StringTokenizer(value.toString());
+      while (itr.hasMoreTokens()) {
+        word.set(itr.nextToken());
+        context.write(word, one);
+      }
+    }
+  }
+*****************************************
+
+::Shuffle & Sort::
+- MapReduce makes the guarantee that the input to every reducer is sorted by key
+- The process by which the system performs the sort, and transfers the map output to the reducers as inputs, is known as the shuffle
+
+
+::Reduce::
+- In this phase the Reduce method is called for each key
+- The list of value pairs / key are in the grouped inputs
+- The logic for aggregation (on the values) is written in the reduce() method
+- The output of the reduce task is typically written to the FileSystem via context.write
+- The output of the Reducer is not sorted
+
+- For the WordCount example, the logic for reduce()
+		- Loop through the List (of values)
+		- Compute Sum (Add the values)
+
+*****************************************
+The Reducer Code
+*****************************************
+
+ public static class IntSumReducer
+       extends Reducer<Text,IntWritable,Text,IntWritable> {
+    private IntWritable result = new IntWritable();
+
+    public void reduce(Text key, Iterable<IntWritable> values,
+                       Context context
+                       ) throws IOException, InterruptedException {
+      int sum = 0;
+      for (IntWritable val : values) {
+        sum += val.get();
+      }
+      result.set(sum);
+      context.write(key, result);
+    }
+  }
+
+ *****************************************
+
+
+The main() class - Entry point of the program (Execution begins from here)
+- Login
+		Define MapReduce job
+		Set input and output locations
+		Set input and output formats (Optional)
+		Set Mapper and Reduce classes 
+		Submit job
+
+
+*****************************************
+The main code
+*****************************************
+
+ public static void main(String[] args) throws Exception {
+    Configuration conf = new Configuration();
+    Job job = Job.getInstance(conf, "word count");
+    job.setJarByClass(WordCount.class);
+    job.setMapperClass(TokenizerMapper.class);
+    job.setCombinerClass(IntSumReducer.class);
+    job.setReducerClass(IntSumReducer.class);
+    job.setOutputKeyClass(Text.class);
+    job.setOutputValueClass(IntWritable.class);
+    FileInputFormat.addInputPath(job, new Path(args[0]));
+    FileOutputFormat.setOutputPath(job, new Path(args[1]));
+    System.exit(job.waitForCompletion(true) ? 0 : 1);
+  }
+}
+
+*****************************************
+################################################################################################################################################################
+
+
+::YARN Terminologies::
+-> ResourceManager
+-> NodeManager
+-> ApplicationsManager
+-> ApplicationsMaster
+-> Container
+-> Scheduler
+-> YarnChiId
+
+ 
+job = Application (Both are same)
+Within a single job !
+		# of map tasks = # of Input Splits (Most likely = no of blocks)
+		# f reduce tasks = 1
+
+
+- The map and the reduce tasks are the actual units of execution - the compute resources are needed for these tasks
+- In YARN terminologies, compute resource is termed as a "Container"
+- Container = <CPU+RAM>
+- For execution of map and reduce tasks, containers are needed
+- The Master service of YARN (ResourceManager) is ultimate authority for allocation of the containers
+
+
+################################################################################################################################################################
